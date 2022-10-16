@@ -1,18 +1,18 @@
 package com.example.myapplication
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import com.example.myapplication.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
-    lateinit var binding: ActivityMainBinding
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+
+class MainActivity : AppCompatActivity(R.layout.activity_main) {
+
+    private lateinit var controller: NavController
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.host_constrainLayout,BlankFragment.newInstance()).commit()
-
+        controller = (supportFragmentManager.findFragmentById(R.id.container) as NavHostFragment)
+            .navController
     }
 }
