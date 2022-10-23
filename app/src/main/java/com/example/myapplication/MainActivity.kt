@@ -1,40 +1,47 @@
 package com.example.myapplication
 
-import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
+import android.os.Bundle
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.myapplication.adapter.DataAdapter
+
 import com.example.myapplication.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-
-    private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var binding: ActivityMainBinding
-
+    private  lateinit var binding: ActivityMainBinding
+    private var dataAdapter: DataAdapter? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        dataAdapter = DataAdapter()
+        binding.recyclerView.apply {
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            adapter = dataAdapter
 
-        setSupportActionBar(binding.toolbar)
 
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
-
-        binding.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
         }
+        dataAdapter?.setItems(mockData())
     }
+    private fun mockData(): List<DataModel> = listOf(
+        DataModel.Liked(title_liked = "Мне нравится", discription_liked = "307 треков - 17 часов"),
+        DataModel.Categories(title_categories = "Плейлисты"),
+        DataModel.Categories(title_categories = "Треки"),
+        DataModel.Categories(title_categories = "Альбомы"),
+        DataModel.Categories(title_categories = "Исполнители"),
+        DataModel.Categories(title_categories = "Подкасты и книги"),
+        DataModel.Categories(title_categories = "Скачанные треки"),
+        DataModel.Categories(title_categories = "Треки с устройства"),
+        DataModel.Categories(title_categories = "Детям"),
+        DataModel.Header(title_header = "Вы недавно слушали"),
+        DataModel.Albums(title_albums = "Макс Корж"),
+        DataModel.Albums(title_albums = "Logic"),
+        DataModel.Albums(title_albums = "Bones"),
+        DataModel.Albums(title_albums = "Макс Краш"),
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        return navController.navigateUp(appBarConfiguration)
-                || super.onSupportNavigateUp()
-    }
+    )
+
+
+
+
 }
