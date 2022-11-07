@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_main"
+    app:startDestination="@id/navigation_news">
+
+    <navigation
+        android:id="@+id/navigation_likes"
+        app:startDestination="@id/likesFragment">
+        <fragment
+            android:id="@+id/likes2Fragment"
+            android:name="com.example.myapplication.Likes2Fragment"
+            android:label="fragment_likes2"
+            tools:layout="@layout/fragment_likes2" />
+        <fragment
+            android:id="@+id/likesFragment"
+            android:name="com.example.myapplication.LikesFragment"
+            android:label="fragment_likes"
+            tools:layout="@layout/fragment_likes" >
+            <action
+                android:id="@+id/action_likesFragment_to_likes2Fragment"
+                app:destination="@id/likes2Fragment" />
+        </fragment>
+    </navigation>
+    <navigation android:id="@+id/navigation_news"
+        app:startDestination="@id/newsFragment">
+        <fragment
+            android:id="@+id/news3Fragment"
+            android:name="com.example.myapplication.News3Fragment"
+            android:label="fragment_news3"
+            tools:layout="@layout/fragment_news3" />
+        <fragment
+            android:id="@+id/news2Fragment"
+            android:name="com.example.myapplication.News2Fragment"
+            android:label="fragment_news2"
+            tools:layout="@layout/fragment_news2" >
+            <action
+                android:id="@+id/action_news2Fragment_to_news3Fragment"
+                app:popUpTo="@id/nav_graph_main"
+                app:popUpToInclusive="true"
+                app:destination="@id/news3Fragment" />
+        </fragment>
+        <fragment
+            android:id="@+id/newsFragment"
+            android:name="com.example.myapplication.NewsFragment"
+            android:label="fragment_news"
+            tools:layout="@layout/fragment_news" >
+            <action
+                android:id="@+id/action_newsFragment_to_news2Fragment"
+                app:popUpTo="@id/nav_graph_main"
+                app:popUpToInclusive="true"
+                app:destination="@id/news2Fragment" />
+        </fragment>
+    </navigation>
+    <navigation android:id="@+id/navigation_settings"
+        app:startDestination="@id/settingsFragment">
+        <fragment
+            android:id="@+id/settingsFragment"
+            android:name="com.example.myapplication.SettingsFragment"
+            android:label="fragment_settings"
+            tools:layout="@layout/fragment_settings">
+            <action
+                android:id="@+id/action_settingsFragment_to_settings2Fragment"
+                app:destination="@id/settings2Fragment" />
+        </fragment>
+        <fragment
+            android:id="@+id/settings2Fragment"
+            android:name="com.example.myapplication.settings.Settings2Fragment"
+            android:label="fragment_settings2"
+            tools:layout="@layout/fragment_settings2">
+            <action
+                android:id="@+id/action_settings2Fragment_to_settings3Fragment"
+                app:destination="@id/settings3Fragment" />
+        </fragment>
+        <fragment
+            android:id="@+id/settings3Fragment"
+            android:name="com.example.myapplication.settings.Settings3Fragment"
+            android:label="fragment_settings3"
+            tools:layout="@layout/fragment_settings3" />
+    </navigation>
+</navigation>

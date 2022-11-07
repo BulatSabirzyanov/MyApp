@@ -11,4 +11,16 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_news">Лента</string>
+    <string name="title_liked">Избранное</string>
+    <string name="title_settings">Настройки</string>
+    <string name="text_for_liked_fragment">привет это страница избранного</string>
+    <string name="text_for_settings_fragment">привет тут находятся настройки</string>
+    <string name="text_for_news_fragment">тут будут показаны новости</string>
+    <string name="text_next">Далее</string>
+    <string name="edittext1_for_likes">введите название песни</string>
+    <string name="edittext2_for_likes">введите автора песни</string>
+    <string name="button">далее</string>
+    <string name="text__from_settings2">второй фрагмент из серии фрагментов С</string>
+    <string name="text__from_settings3">это третий фрагмент из серии экранов С</string>
 </resources>
