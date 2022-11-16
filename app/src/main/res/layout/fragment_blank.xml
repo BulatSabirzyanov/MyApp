@@ -35,6 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
+        android:enabled="false"
         android:hint="текст развернутого сообщения"
         android:minHeight="48dp"
         android:textColorHint="#757575"
@@ -48,6 +49,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
         android:hint="введите число"
+        android:inputType="number"
         android:minHeight="48dp"
         android:textColorHint="#757575"
         app:layout_constraintEnd_toEndOf="parent"
@@ -81,7 +83,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/notifai"/>
     <Button
-        android:id="@+id/third_btn"
+        android:id="@+id/reset_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="device reset time"

@@ -16,9 +16,9 @@ import androidx.core.content.getSystemService
 class NotificationHandler(private val context: Context) {
     private var notificationManager: NotificationManager? = null
 
-    fun createNotification(textTitle: String?, messegeSmallText: String?,messegeBigText: String?, intent: PendingIntent ){
+    fun createNotification(textTitle: String?, messegeSmallText: String?, messegeBigText: String?, intent: PendingIntent ){
         createNotificationChannel()
-        val notificationBulder = NotificationCompat.Builder(context,CHANNEL_ID)
+        val notificationBulder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle(textTitle)
             .setContentText(messegeSmallText)
@@ -26,7 +26,8 @@ class NotificationHandler(private val context: Context) {
             .setContentIntent(intent)
             .setCategory(Notification.CATEGORY_MESSAGE)
             .build()
-        notificationManager?.notify(rand(),notificationBulder)
+
+        notificationManager?.notify(rand(), notificationBulder)
     }
     private fun createNotificationChannel() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

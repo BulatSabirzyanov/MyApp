@@ -2,7 +2,6 @@ package com.example.myapplication
 
 import android.app.AlarmManager
 import android.app.PendingIntent
-import android.content.Context
 import android.content.Context.ALARM_SERVICE
 import android.content.Intent
 import android.os.Bundle
@@ -10,11 +9,10 @@ import android.os.SystemClock
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.core.content.ContextCompat.getSystemService
+import android.widget.Toast
 import com.example.myapplication.databinding.FragmentBlankBinding
+import java.util.concurrent.TimeUnit
 
 
 class BlankFragment : Fragment(R.layout.fragment_blank) {
@@ -29,10 +27,10 @@ class BlankFragment : Fragment(R.layout.fragment_blank) {
     private var timeUntilShownInSeconds: Int = 0
     private var isCheckBoxChecked = false
 
-    private var isTitleEmpty = true
-    private var isMessageSmallEmpty = true
-    private var isMessageBigEmpty = true
-    private var isAllTimeEmpty = true
+    private var isTitleNotEmpty = false
+    private var isMessageSmallNotEmpty = false
+    private var isMessageBigEmpty = false
+    private var isAllTimeNotEmpty = false
 
 
     private var allTime: Long = 0
@@ -40,70 +38,66 @@ class BlankFragment : Fragment(R.layout.fragment_blank) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentBlankBinding.bind(view)
-
-
         super.onViewCreated(view, savedInstanceState)
-        btnlistners()
+
         with(binding) {
             eTtitleText.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(p0: Editable?) {
+                    checkIfAllNotEmpty()
                 }
 
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    if (Validate(eTtitleText.text.toString())) {
-                        isTitleEmpty = false
-                    }
+
                 }
 
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    isTitleNotEmpty = p0?.isNullOrBlank() != true
+
+
 
                 }
             })
-        }
-        with(binding) {
             eTmessageSmallText.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(p0: Editable?) {
+                    checkIfAllNotEmpty()
                 }
 
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    if (Validate(eTmessageSmallText.text.toString())) {
-                        isMessageSmallEmpty = false
-                    }
+
                 }
 
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
+                    isMessageSmallNotEmpty = p0?.isNullOrBlank() != true
                 }
             })
-        }
-        with(binding) {
             eTallTime.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(p0: Editable?) {
+                    checkIfAllNotEmpty()
                 }
 
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    if (Validate(eTallTime.text.toString())) {
-                        isAllTimeEmpty = false
-                    }
+
                 }
 
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
+                    isAllTimeNotEmpty = p0?.isNullOrBlank() != true
                 }
             })
         }
+        btnlistners()
     }
 
     private fun Validate(text: String): Boolean {
         return text.isNullOrEmpty()
     }
 
-
     private fun checkIfAllNotEmpty() {
+        println(isTitleNotEmpty)
+        println(isAllTimeNotEmpty)
+        println(isMessageSmallNotEmpty)
         binding.notifai.isEnabled =
-            !isTitleEmpty && !isMessageSmallEmpty && !isMessageBigEmpty
+            isTitleNotEmpty && isMessageSmallNotEmpty && isAllTimeNotEmpty
     }
-
 
     private fun setNotifaiAlarm(
         timeUntilShownInSeconds: Int,
@@ -111,37 +105,32 @@ class BlankFragment : Fragment(R.layout.fragment_blank) {
         messageSmallText: String?,
         messageBigText: String?
     ) {
-        alarmManager = requireContext().getSystemService(ALARM_SERVICE) as AlarmManager
-
+        alarmManager = activity?.baseContext?.getSystemService(ALARM_SERVICE) as AlarmManager
         val pendingIntent = getPendingIntent(titleText, messageSmallText, messageBigText)
-
-        allTime = SystemClock.elapsedRealtime() + timeUntilShownInSeconds * 1000
-
-
+        allTime = SystemClock.elapsedRealtime() + 1
         alarmManager?.set(
             AlarmManager.ELAPSED_REALTIME_WAKEUP,
             allTime,
             pendingIntent
         )
-
-
     }
+
 
     private fun getPendingIntent(
         titleText: String?,
         messageSmallText: String?,
         messageBigText: String?
     ): PendingIntent =
-        Intent(requireContext(), AlarmReceiver::class.java).apply {
+        Intent(activity?.baseContext, AlarmReceiver::class.java).apply {
             putExtra(AlarmReceiver.TITLE_TEXT, titleText)
             putExtra(AlarmReceiver.SMALL_TEXT, messageSmallText)
             putExtra(AlarmReceiver.BIG_TEXT, messageBigText)
         }.let { intent ->
             PendingIntent.getBroadcast(
-                requireContext(),
+                activity?.baseContext,
                 0,
                 intent,
-                PendingIntent.FLAG_UPDATE_CURRENT
+                PendingIntent.FLAG_MUTABLE
             )
         }
 
@@ -158,11 +147,14 @@ class BlankFragment : Fragment(R.layout.fragment_blank) {
                     eTmessageBigText.text.toString()
                 } else {
                     null
+
+
                 }
 
                 timeUntilShownInSeconds = Integer.valueOf(eTallTime.text.toString())
 
                 setNotifaiAlarm(
+                    timeUntilShownInSeconds,
                     titleText,
                     messageSmallText,
                     messageBigText
@@ -170,25 +162,40 @@ class BlankFragment : Fragment(R.layout.fragment_blank) {
 
 
             }
-            cancelNotify.setOnClickListener{
-                val timediff = if(allTime != 0L) {(allTime - SystemClock.elapsedRealtime())/1000} else{}
-                if(allTime > 0L) {
-                    alarmManager?.cancel(getPendingIntent(
-                        titleText,
-                        messageSmallText,
-                        messageBigText
-
-                    ))
+            cancelNotify.setOnClickListener {
+                val timediff = if (allTime != 0L) {
+                    (allTime - SystemClock.elapsedRealtime()) / 1000
+                } else {
+                    0
                 }
+                if (allTime > 0L) {
+                    alarmManager?.cancel(
+                        getPendingIntent(
+                            titleText,
+                            messageSmallText,
+                            messageBigText
+                        )
+                    )
 
                 }
             }
+            resetTime.setOnClickListener {
+                val timeInMillis = SystemClock.uptimeMillis()
+                val time = String.format(
+                    "02%d min, %02d sec ",
+                    TimeUnit.MILLISECONDS.toMinutes(timeInMillis),
+                    TimeUnit.MILLISECONDS.toSeconds(timeInMillis) -
+                            TimeUnit.MILLISECONDS.toSeconds(
+                                TimeUnit.MILLISECONDS.toMinutes(
+                                    timeInMillis
+                                )
+                            )
+                )
+                Toast.makeText(requireContext(), time, Toast.LENGTH_SHORT).show()
+            }
 
-
-
+        }
 
 
     }
-
-
 }
