@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">MyLOc</string>
     <string name="title_activity_main">MainActivity</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -23,4 +23,6 @@
     <string name="button">далее</string>
     <string name="text__from_settings2">второй фрагмент из серии фрагментов С</string>
     <string name="text__from_settings3">это третий фрагмент из серии экранов С</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
 </resources>
