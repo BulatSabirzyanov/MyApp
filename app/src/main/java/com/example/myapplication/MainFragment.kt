@@ -16,13 +16,13 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         binding = FragmentMainBinding.bind(view)
         super.onViewCreated(view, savedInstanceState)
         with(binding){
-            binding.btnStart.setOnClickListener {
+            btnStart.setOnClickListener {
                 Intent(context?.applicationContext, LocationService::class.java).apply {
                     action = LocationService.ACTION_START
                     context?.startService(this)
                 }
             }
-            binding.btnStop.setOnClickListener{
+            btnStop.setOnClickListener{
                 Intent(context?.applicationContext, LocationService::class.java).apply {
                     action = LocationService.ACTION_STOP
                     context?.startService(this)
