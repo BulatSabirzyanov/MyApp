@@ -14,6 +14,7 @@ import com.example.myapplication.databinding.ActivityMainBinding
 class MainActivity : FragmentActivity(){
     private lateinit var adapter: Adapter
     private lateinit var viewPager: ViewPager2
+    var checkLoaded = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,6 +22,9 @@ class MainActivity : FragmentActivity(){
         adapter = Adapter(this)
         viewPager = findViewById(R.id.vPager)
         viewPager.adapter = adapter
+
+
+
 
     }
 

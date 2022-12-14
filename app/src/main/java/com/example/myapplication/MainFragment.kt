@@ -33,18 +33,29 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentMainBinding.bind(view)
+        var flag = false
         arguments?.takeIf { it.containsKey(ARG_ID) }?.apply {
             val id = arguments?.getInt(ARG_ID)
             if (id != null) {
                 val image = ImgRepo.imgList[id]
                 with(binding) {
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        if(!loaded)
+
+                    lifecycleScope.launch {
+                        var preloaded = async(Dispatchers.IO) {
+                            delay(4000)
+                            Glide.with(view)
+                                .load(image.url)
+                                .placeholder(R.drawable.gif)
+                                .preload()
+
+                        }
+                        preloaded.await()
                         Glide.with(view)
                             .load(image.url)
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .preload()
+                            .into(iV)
                     }
+
+
                 }
             }
         }
@@ -52,7 +63,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
 
     suspend fun loadImg(view: View, image: Image, imageView: ImageView) {
-            delay(5000)
-            Glide.with(view).load(image.url).into(imageView)
+        delay(5000)
+        Glide.with(view).load(image.url).into(imageView)
     }
 }
