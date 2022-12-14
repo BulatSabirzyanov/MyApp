@@ -6,28 +6,22 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.widget.ViewPager2
 import com.example.myapplication.databinding.ActivityMainBinding
 
 
-class MainActivity : AppCompatActivity(){
-    private lateinit var binding: ActivityMainBinding
+class MainActivity : FragmentActivity(){
+    private lateinit var adapter: Adapter
+    private lateinit var viewPager: ViewPager2
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        binding = ActivityMainBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.fragment, MainFragment())
-            .commit()
-        ActivityCompat.requestPermissions(
-            this,
-            arrayOf(
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ),
-            0
-        )
+        setContentView(R.layout.activity_main)
+        adapter = Adapter(this)
+        viewPager = findViewById(R.id.vPager)
+        viewPager.adapter = adapter
+
     }
 
 }

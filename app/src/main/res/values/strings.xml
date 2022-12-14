@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MyLOc</string>
+    <string name="app_name">MyPIcs</string>
     <string name="title_activity_main">MainActivity</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -25,4 +25,5 @@
     <string name="text__from_settings3">это третий фрагмент из серии экранов С</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
+    <string name="text_of_load">скачать</string>
 </resources>
