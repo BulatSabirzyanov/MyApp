@@ -26,4 +26,5 @@
     <string name="start">Start</string>
     <string name="stop">Stop</string>
     <string name="text_of_load">скачать</string>
+    <string name="btn_change">Change</string>
 </resources>

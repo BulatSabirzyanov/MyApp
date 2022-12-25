@@ -7,27 +7,27 @@
     tools:context=".MainActivity">
 
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/vPager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <fragment
+        android:id="@+id/fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:animateLayoutChanges="true"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toTopOf="@+id/mainBottomNavigationView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navGraph="@navigation/main_nav" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/mainBottomNavigationView"
+        android:layout_width="0dp"
+        android:animateLayoutChanges="true"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:menu="@menu/main_menu"/>
 
-
-
-    </androidx.viewpager2.widget.ViewPager2>
-
-
-    <Button
-        android:id="@+id/btn_load"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/text_of_load"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
-
