@@ -9,9 +9,9 @@ import androidx.room.*
     ]
 )
 data class Settings(
-    @PrimaryKey(autoGenerate = true) val id: Long,
-    @ColumnInfo(name = "setting_1") val setting1: Boolean,
-    @ColumnInfo(name = "setting_2") val setting2: Boolean,
-    @ColumnInfo(name = "setting_3") val setting3: Boolean,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    @ColumnInfo(name = "setting_1") val setting1: Boolean = true,
+    @ColumnInfo(name = "setting_2") val setting2: Boolean = true,
+    @ColumnInfo(name = "setting_3") val setting3: Boolean = true,
     @ColumnInfo(name = "user_id") val userId: Long
 )

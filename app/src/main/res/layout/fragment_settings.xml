@@ -10,6 +10,7 @@
         android:id="@+id/checkbox_setting_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:checked="true"
         android:text="@string/setting_1_description"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -18,6 +19,7 @@
         android:id="@+id/checkbox_setting_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:checked="true"
         android:layout_marginTop="20dp"
         android:text="@string/setting_2_description"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,13 +29,14 @@
         android:id="@+id/checkbox_setting_3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:checked="true"
         android:layout_marginTop="20dp"
         android:text="@string/setting_3_description"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/checkbox_setting_2" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btnSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"

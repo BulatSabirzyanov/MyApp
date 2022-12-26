@@ -9,7 +9,9 @@ import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.myapplication.database.AppDatabase
 import com.example.myapplication.database.DatabaseRepository
 import com.example.myapplication.database.User
@@ -17,22 +19,20 @@ import com.example.myapplication.databinding.FragmentRegBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class RegFragment : Fragment(R.layout.fragment_reg) {
     private lateinit var binding: FragmentRegBinding
     private lateinit var repository: DatabaseRepository
+    private lateinit var preferences: UserPreferences
     private val profileFragment = ProfileFragment()
-
-
-
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         repository = DatabaseRepository(AppDatabase.getInstance(requireContext()))
         binding = FragmentRegBinding.bind(view)
+        preferences = UserPreferences(requireContext())
         super.onViewCreated(view, savedInstanceState)
-        view.setOnClickListener{
+        view.setOnClickListener {
             ViewUtils.hideKeyboard(view)
         }
         var email = binding.regEmail.text.toString()
@@ -54,6 +54,7 @@ class RegFragment : Fragment(R.layout.fragment_reg) {
                         emailChecked = true
                     }
                 }
+
                 override fun afterTextChanged(s: Editable?) {
                     if (checkEmail(binding.regEmail.text.toString())) {
                         email = binding.regEmail.text.toString()
@@ -73,34 +74,45 @@ class RegFragment : Fragment(R.layout.fragment_reg) {
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    if (emailChecked && isValidPassword(binding.regPassword.text.toString()).also { Log.i("123","$password  ${isValidPassword(password)}") }) {
+                    if (emailChecked && isValidPassword(binding.regPassword.text.toString())
+                    ) {
                         regButton.isEnabled = true
                     }
                 }
+
                 override fun afterTextChanged(s: Editable?) {
                     if (emailChecked && isValidPassword(binding.regPassword.text.toString())) {
                         password = binding.regPassword.text.toString()
                         regButton.isEnabled = true
-                        Log.i("123","$password  ${isValidPassword(password)}")
+
 
                     }
                 }
             })
             regButton.setOnClickListener {
-                lifecycleScope.launch(Dispatchers.IO){
+                lifecycleScope.launch(Dispatchers.IO) {
                     val user = User(login = email, password = password)
-                    repository.insertUser(user)
-                    val bundle = Bundle()
-                    bundle.putLong("id", user.id)
-                    profileFragment.arguments = bundle
-                    parentFragmentManager.beginTransaction().apply {
-                        replace(R.id.fragment, profileFragment).addToBackStack(null)
-                            .commit()
+                    if (user in repository.getAllUsers())
+                        Toast.makeText(
+                            requireContext(),
+                            "такой пользователь существует попытайтесь войти",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    else {
+                        repository.insertUser(user)
+                        val newUser = repository.getUser(email,password)
+                        preferences.saveUserId(newUser.id)
+                        val id = user.id
+                        Log.i("1111111111111", "$id")
+                        withContext(Dispatchers.Main) {
+
+                            findNavController().navigate(
+                                R.id.action_regFragment_to_profileFragment
+                            )
+                        }
                     }
                 }
-
             }
-
         }
     }
 

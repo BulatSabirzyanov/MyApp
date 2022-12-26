@@ -12,6 +12,10 @@ class DatabaseRepository(private val database: AppDatabase) {
         return database.settingsDao().getSettingsForUser(userId)
     }
 
+    suspend fun insertSettings(settings: Settings) {
+        database.settingsDao().insert(settings)
+    }
+
     suspend fun updateUser(user: User) {
         database.userDao().update(user)
     }

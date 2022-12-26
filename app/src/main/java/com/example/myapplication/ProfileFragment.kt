@@ -1,41 +1,67 @@
 package com.example.myapplication
 
-
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import com.example.myapplication.database.AppDatabase
 import com.example.myapplication.database.DatabaseRepository
+import com.example.myapplication.database.Settings
 import com.example.myapplication.database.User
 import com.example.myapplication.databinding.FragmentProfileBinding
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
     private lateinit var email: String
     private var emailChecked: Boolean = false
     private lateinit var binding: FragmentProfileBinding
     private lateinit var repository: DatabaseRepository
+    private lateinit var preferences: UserPreferences
     private lateinit var user: User
+    private   var id: Long = 0
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentProfileBinding.bind(view)
         repository = DatabaseRepository(AppDatabase.getInstance(requireContext()))
+        preferences = UserPreferences(requireContext())
         super.onViewCreated(view, savedInstanceState)
-        view.setOnClickListener{
+        id = preferences.getUserId()
+        Log.i("1111111111111", "$id")
+        lifecycleScope.launch(Dispatchers.IO) {
+            repository.insertSettings(
+                Settings(
+                    setting1 = true,
+                    setting2 = true,
+                    setting3 = true,
+                    userId = id
+                )
+            )
+        }
+        val userSettings = Settings(setting1 = true,
+            setting2 = true,
+            setting3 = true,
+            userId = id)
+        preferences.saveSetting1(userSettings.setting1)
+        preferences.saveSetting2(userSettings.setting2)
+        preferences.saveSetting2(userSettings.setting3)
+        view.setOnClickListener {
             ViewUtils.hideKeyboard(view)
         }
-        val id = requireArguments().getLong("id")
-        Log.i("1111111111111", "$id")
-
-
         with(binding) {
-            lifecycleScope.launch(Dispatchers.IO) {
-                user = repository.getUserById(id)
-                tVLogin.text = user.login
+
+            lifecycleScope.launch{
+                val preloaded = async { user = repository.getUserById(id) }
+                preloaded.await()
+                withContext(Dispatchers.Main) { tVLogin.text = user.login }
+
             }
 
             btnChange.setOnClickListener {
