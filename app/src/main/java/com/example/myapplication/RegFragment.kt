@@ -1,18 +1,20 @@
 package com.example.myapplication
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
-import androidx.fragment.app.viewModels
+import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import com.example.myapplication.database.AppDatabase
 import com.example.myapplication.database.DatabaseRepository
 import com.example.myapplication.database.User
-import com.example.myapplication.database.UserViewModel
 import com.example.myapplication.databinding.FragmentRegBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -21,10 +23,18 @@ class RegFragment : Fragment(R.layout.fragment_reg) {
     private lateinit var binding: FragmentRegBinding
     private lateinit var repository: DatabaseRepository
     private val profileFragment = ProfileFragment()
+
+
+
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         repository = DatabaseRepository(AppDatabase.getInstance(requireContext()))
         binding = FragmentRegBinding.bind(view)
         super.onViewCreated(view, savedInstanceState)
+        view.setOnClickListener{
+            ViewUtils.hideKeyboard(view)
+        }
         var email = binding.regEmail.text.toString()
         var password = binding.regPassword.text.toString()
 
@@ -71,19 +81,20 @@ class RegFragment : Fragment(R.layout.fragment_reg) {
                     if (emailChecked && isValidPassword(binding.regPassword.text.toString())) {
                         password = binding.regPassword.text.toString()
                         regButton.isEnabled = true
+                        Log.i("123","$password  ${isValidPassword(password)}")
 
                     }
                 }
             })
             regButton.setOnClickListener {
-                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO){
+                lifecycleScope.launch(Dispatchers.IO){
                     val user = User(login = email, password = password)
                     repository.insertUser(user)
                     val bundle = Bundle()
-                    bundle.putString("email", email)
+                    bundle.putLong("id", user.id)
                     profileFragment.arguments = bundle
                     parentFragmentManager.beginTransaction().apply {
-                        replace(R.id.fragment, ProfileFragment()).addToBackStack(null)
+                        replace(R.id.fragment, profileFragment).addToBackStack(null)
                             .commit()
                     }
                 }

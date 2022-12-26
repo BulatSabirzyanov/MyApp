@@ -5,16 +5,18 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import android.widget.Toast.LENGTH_SHORT
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.myapplication.database.AppDatabase
 import com.example.myapplication.database.DatabaseRepository
 
 import com.example.myapplication.databinding.FragmentLoginBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
 
@@ -25,11 +27,17 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     private val profileFragment = ProfileFragment()
 
 
+
+
     @SuppressLint("ShowToast")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         repository = DatabaseRepository(AppDatabase.getInstance(requireContext()))
         binding = FragmentLoginBinding.bind(view)
         super.onViewCreated(view, savedInstanceState)
+
+        view.setOnClickListener{
+            ViewUtils.hideKeyboard(view)
+        }
         var email = binding.loginEmail.text.toString()
         var password = binding.loginPassword.text.toString()
         with(binding) {
@@ -43,15 +51,12 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
                 }
 
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    Log.i("402", email)
-                }
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
                 override fun afterTextChanged(s: Editable?) {
                     if (checkEmail(binding.loginEmail.text.toString())) {
                         email = binding.loginEmail.text.toString()
                         emailChecked = true
-                        Log.i("402", email)
                     }
                 }
 
@@ -66,71 +71,47 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
                 }
 
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    Log.i("402", password)
-                }
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
                 override fun afterTextChanged(s: Editable?) {
                     if (emailChecked && isValidPassword(binding.loginPassword.text.toString())) {
                         password = binding.loginPassword.text.toString()
-                        Log.i("402", password)
 
                     }
                 }
 
             })
         }
-        lifecycleScope.launch(Dispatchers.IO) {
-            val user = repository.getUser(email, password)
-            Log.i("401", email)
-            Log.i("402", password)
-            withContext(Dispatchers.Main) {
-                if (user != null) {
+        binding.loginButton.setOnClickListener {
+            lifecycleScope.launch(Dispatchers.IO) {
+                val user = repository.getUser(email, password)
+
+                withContext(Dispatchers.Main) {
                     val bundle = Bundle()
-                    bundle.putString("email", email)
+                    bundle.putLong("id", user.id)
                     profileFragment.arguments = bundle
-                    binding.loginButton.setOnClickListener {
-                        if (checkEmail(binding.loginEmail.text.toString()) && isValidPassword(
-                                binding.loginPassword.text.toString()
-                            )
-                        ) {
-                            email = binding.loginEmail.text.toString()
-                            password = binding.loginPassword.text.toString()
-                            parentFragmentManager.beginTransaction().apply {
-                                replace(R.id.fragment, ProfileFragment()).addToBackStack(null)
-                                    .commit()
-                            }
-                        } else {
-                            Toast.makeText(
-                                requireContext(),
-                                "непрова",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }
-                    } else {
-                        Toast.makeText(
-                            requireContext(),
-                            "нет такого пользователя зарегистрируйтесь",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            }
-            with(binding) {
-                regButton.setOnClickListener {
                     parentFragmentManager.beginTransaction().apply {
-                        replace(R.id.fragment, RegFragment()).addToBackStack(null)
+                        replace(R.id.fragment, profileFragment).addToBackStack(null)
                             .commit()
                     }
+
                 }
             }
-
+        }
+        with(binding) {
+            regButton.setOnClickListener {
+                parentFragmentManager.beginTransaction().apply {
+                    replace(R.id.fragment, RegFragment()).addToBackStack(null)
+                        .commit()
+                }
+            }
         }
 
-        companion object {
-            @JvmStatic
-            fun newInstance() = ProfileFragment()
-
-        }
     }
+
+    companion object {
+        @JvmStatic
+        fun newInstance() = ProfileFragment()
+
+    }
+}

@@ -27,4 +27,8 @@
     <string name="stop">Stop</string>
     <string name="text_of_load">скачать</string>
     <string name="btn_change">Change</string>
+    <string name="setting_3_description">Описание настройки 3</string>
+    <string name="setting_2_description">Описание настройки 2</string>
+    <string name="setting_1_description">Описание настройки 1</string>
+    <string name="bnt_save">Save</string>
 </resources>

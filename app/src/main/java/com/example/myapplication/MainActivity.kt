@@ -4,8 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
+
 import androidx.navigation.ui.setupWithNavController
 
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -20,11 +19,21 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationView.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if(destination.id == R.id.loginFragment2) {
-                bottomNavigationView.visibility = View.GONE
-            } else {
-                bottomNavigationView.visibility = View.VISIBLE
+            when (destination.id) {
+                R.id.regFragment -> {
+                    // Скрываем bottomNavigationView
+                    bottomNavigationView.visibility = View.GONE
+                }
+                R.id.loginFragment2 -> {
+                    bottomNavigationView.visibility = View.GONE
+                }
+                else -> {
+                    // Показываем bottomNavigationView
+                    bottomNavigationView.visibility = View.VISIBLE
+                }
             }
         }
+
+
     }
 }
