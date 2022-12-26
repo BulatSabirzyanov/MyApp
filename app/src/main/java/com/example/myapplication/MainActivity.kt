@@ -1,40 +1,45 @@
 package com.example.myapplication
 
-import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.view.View
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import com.example.myapplication.databinding.ActivityMainBinding
+import androidx.navigation.ui.setupWithNavController
+import com.example.myapplication.database.DatabaseRepository
+
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
-
-    private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var binding: ActivityMainBinding
-
+    private lateinit var repository: DatabaseRepository
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.mainBottomNavigationView)
+        val navController = findNavController(R.id.fragment)
+        bottomNavigationView.setupWithNavController(navController)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        setSupportActionBar(binding.toolbar)
-
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
-
-        binding.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.regFragment -> {
+                    // Скрываем bottomNavigationView
+                    bottomNavigationView.visibility = View.GONE
+                }
+                R.id.loginFragment2 -> {
+                    bottomNavigationView.visibility = View.GONE
+                }
+                else -> {
+                    // Показываем bottomNavigationView
+                    bottomNavigationView.visibility = View.VISIBLE
+                }
+            }
         }
+
+
+
+
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        return navController.navigateUp(appBarConfiguration)
-                || super.onSupportNavigateUp()
+    interface DataListener {
+        fun onDataReceived(data: Any)
     }
 }

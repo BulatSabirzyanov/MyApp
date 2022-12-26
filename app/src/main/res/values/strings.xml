@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">MyPIcs</string>
     <string name="title_activity_main">MainActivity</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -9,4 +9,26 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_news">Лента</string>
+    <string name="title_liked">Избранное</string>
+    <string name="title_settings">Настройки</string>
+    <string name="text_for_liked_fragment">привет это страница избранного</string>
+    <string name="text_for_settings_fragment">привет тут находятся настройки</string>
+    <string name="text_for_news_fragment">тут будут показаны новости</string>
+    <string name="text_next">Далее</string>
+    <string name="edittext1_for_likes">введите название песни</string>
+    <string name="edittext2_for_likes">введите автора песни</string>
+    <string name="button">далее</string>
+    <string name="text__from_settings2">второй фрагмент из серии фрагментов С</string>
+    <string name="text__from_settings3">это третий фрагмент из серии экранов С</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="text_of_load">скачать</string>
+    <string name="btn_change">Change</string>
+    <string name="setting_3_description">Описание настройки 3</string>
+    <string name="setting_2_description">Описание настройки 2</string>
+    <string name="setting_1_description">Описание настройки 1</string>
+    <string name="bnt_save">Save</string>
 </resources>
