@@ -43,7 +43,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="60dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="56dp"
         android:textSize="36sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnSearch" />
@@ -60,10 +60,10 @@
 
     <ImageView
         android:id="@+id/iV_weather_icon_main_fragment"
-        android:layout_width="89dp"
-        android:layout_height="68dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="92dp"
+        android:layout_height="79dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
         app:layout_constraintStart_toEndOf="@+id/tV_temp_main_fragment"
         app:layout_constraintTop_toBottomOf="@+id/tV_city_name_main_fragment"
         tools:src="@tools:sample/avatars" />

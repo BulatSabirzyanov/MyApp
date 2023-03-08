@@ -21,7 +21,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="HW3"
+            android:label="Погода"
             android:theme="@style/Theme.MyApplication.NoActionBar">
             <meta-data
                 android:name="android.app.lib_name"
