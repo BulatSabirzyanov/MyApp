@@ -7,7 +7,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import com.example.myapplication.data.repository.WeatherRepository
+
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private lateinit var controller: NavController
@@ -15,8 +15,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val repository = WeatherRepository()
-        val city = "Moscow"
+
         val locationPermissionRequest = registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) { permissions ->
@@ -50,4 +49,5 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 .navController
 
     }
+
 }
