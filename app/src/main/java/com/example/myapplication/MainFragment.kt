@@ -1,6 +1,5 @@
 package com.example.myapplication
 
-
 import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Location
@@ -71,7 +70,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                             }"
                         )
                         val cityName = weatherInfo.cityName
-                        val temp = weatherInfo.temp
+                        val temp = weatherInfo.temp?.toInt().toString()
                         val src = weatherInfo.weatherIcon
                         withContext(Dispatchers.Main) {
                             tVCityNameMainFragment.text = cityName
@@ -105,6 +104,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                                 withContext(Dispatchers.IO) {
                                     val date = Date().time / 1000
                                     val cachedWeatherResponse = WeatherInfo(
+                                        id = cityName + weatherResponse?.coords?.latitude.toString() + weatherResponse?.coords?.longitude.toString(),
                                         date = date,
                                         cityName = cityName,
                                         latitude = weatherResponse?.coords?.latitude,
@@ -166,7 +166,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                         val latitude = location!!.latitude.toFloat()
                         val longitude = location.longitude.toFloat()
                         lifecycleScope.launch(Dispatchers.IO) {
-                            val dateNow = System.currentTimeMillis() / 1000
+                            val dateNow = Date().time / 1000
                             if ((dateNow - databaseRepository.getDateInfoByCoords(
                                     latitude = latitude, longitude = longitude
                                 )) > 60
@@ -199,6 +199,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                                     withContext(Dispatchers.IO) {
 
                                         val cachedWeatherResponse = WeatherInfo(
+                                            id = cityName + weatherResponse?.coords?.latitude.toString() + weatherResponse?.coords?.longitude.toString(),
                                             date = dateNow,
                                             cityName = cityName,
                                             latitude = weatherResponse?.coords?.latitude,

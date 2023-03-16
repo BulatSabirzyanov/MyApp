@@ -43,8 +43,8 @@ class WeatherPageFragment : BottomSheetDialogFragment(R.layout.fragment_weather_
                 val weatherInfo = databaseRepository.getCachedWeatherResponse(cityName!!)
                 withContext(Dispatchers.Main) {
                     val weather = weatherInfo.weatherMain
-                    val temp = weatherInfo.temp.toString()
-                    val feelsLike = weatherInfo.feelsLike.toString()
+                    val temp = weatherInfo.temp?.toInt().toString()
+                    val feelsLike = weatherInfo.feelsLike?.toInt().toString()
                     val wind = weatherInfo.windSpeed
                     val src = weatherInfo.weatherIcon
                     val humidity = weatherInfo.humidity

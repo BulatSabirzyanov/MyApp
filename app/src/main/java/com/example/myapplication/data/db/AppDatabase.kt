@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [WeatherInfo::class], version = 3)
+@Database(entities = [WeatherInfo::class], version = 4)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun weatherDao(): WeatherDao
 
@@ -16,11 +16,7 @@ abstract class AppDatabase : RoomDatabase() {
         @JvmStatic
         private var database: AppDatabase? = null
 
-        private val migration2to3 = object : Migration(2, 3) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                // Add migration code here
-            }
-        }
+
 
         fun getInstance(context: Context): AppDatabase {
             synchronized(this) {
@@ -29,6 +25,7 @@ abstract class AppDatabase : RoomDatabase() {
                         context,
                         AppDatabase::class.java, "database-name"
                     )
+                        .fallbackToDestructiveMigration()
                         .build()
                 }
                 return database!!
@@ -39,6 +36,11 @@ abstract class AppDatabase : RoomDatabase() {
 }
 
 val migration2to3 = object : Migration(2, 3) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("DROP TABLE WeatherInfo")
+    }
+}
+val migration3to4 = object : Migration(3, 4) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL("DROP TABLE WeatherInfo")
     }
