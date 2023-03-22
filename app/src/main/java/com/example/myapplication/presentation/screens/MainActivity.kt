@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication.presentation.screens
 
 import android.os.Build
 import android.os.Bundle
@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import com.example.myapplication.R
 
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
@@ -24,16 +25,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                     android.Manifest.permission.ACCESS_FINE_LOCATION,
                     false
                 ) -> {
-                    // Precise location access granted.
                 }
                 permissions.getOrDefault(
                     android.Manifest.permission.ACCESS_COARSE_LOCATION,
                     false
                 ) -> {
-                    // Only approximate location access granted.
                 }
                 else -> {
-                    // No location access granted.
                 }
             }
         }
@@ -45,7 +43,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         )
 
         controller =
-            (supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment)
+            (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment)
                 .navController
 
     }

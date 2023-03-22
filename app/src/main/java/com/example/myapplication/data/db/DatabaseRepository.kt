@@ -1,5 +1,6 @@
 package com.example.myapplication.data.db
 
+
 class DatabaseRepository(private val database: AppDatabase) {
 
     suspend fun getCachedWeatherResponse(cityName: String): WeatherInfo {

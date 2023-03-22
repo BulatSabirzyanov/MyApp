@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.example.myapplication.MainFragment"
+        android:name="com.example.myapplication.presentation.screens.MainFragment"
         android:label="fragment_main"
         tools:layout="@layout/fragment_main">
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <dialog
         android:id="@+id/weatherPageFragment"
-        android:name="com.example.myapplication.WeatherPageFragment"
+        android:name="com.example.myapplication.presentation.screens.WeatherPageFragment"
         android:label="fragment_weather_page"
         tools:layout="@layout/fragment_weather_page" />
 </navigation>

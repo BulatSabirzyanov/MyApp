@@ -1,14 +1,15 @@
-package com.example.myapplication
+package com.example.myapplication.presentation.screens
 
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.example.myapplication.R
 import com.example.myapplication.data.db.AppDatabase
 import com.example.myapplication.data.db.DatabaseRepository
 import com.example.myapplication.data.model.response.WeatherResponse
-import com.example.myapplication.data.repository.WeatherRepository
+import com.example.myapplication.data.repository.WeatherRepositoryImpl
 import com.example.myapplication.databinding.FragmentWeatherPageBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +21,7 @@ import java.util.*
 class WeatherPageFragment : BottomSheetDialogFragment(R.layout.fragment_weather_page) {
 
     private lateinit var databaseRepository: DatabaseRepository
-    private val repository = WeatherRepository()
+    private val repository = WeatherRepositoryImpl()
     private var weatherResponse: WeatherResponse? = null
     private lateinit var binding: FragmentWeatherPageBinding
 
@@ -35,8 +36,10 @@ class WeatherPageFragment : BottomSheetDialogFragment(R.layout.fragment_weather_
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentWeatherPageBinding.bind(view)
+
         val cityName =
             requireArguments().getString("cityName")?.replaceFirstChar { it.uppercaseChar() }
+
         lifecycleScope.launch(Dispatchers.IO) {
             val cityNames = databaseRepository.getAllCityNames()
             if (cityNames.contains(cityName)) {
