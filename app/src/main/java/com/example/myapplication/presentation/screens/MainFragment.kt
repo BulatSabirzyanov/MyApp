@@ -33,10 +33,12 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private fun observeData() {
         viewModel.temperatureDataState.observe(viewLifecycleOwner) { weatherResponse ->
             if (weatherResponse != null) {
+                println("ссылка${weatherResponse.icon}")
                 with(binding) {
                     cityName = weatherResponse.cityName
                     tVCityNameMainFragment.text = cityName
                     tVTempMainFragment.text = "${weatherResponse.temperature}\u00B0C"
+
                     Glide.with(this@MainFragment).load(
                         "https://openweathermap.org/img/wn/${weatherResponse.icon}.png"
                     ).into(iVWeatherIconMainFragment)
@@ -51,9 +53,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding = FragmentMainBinding.bind(view)
         super.onViewCreated(view, savedInstanceState)
-
+        binding = FragmentMainBinding.bind(view)
         dataDependency = DataDependency(requireContext())
         viewModelFactory = MainFragmentViewModelFactory(dataDependency)
         view.setOnClickListener {
@@ -66,6 +67,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 cityName =
                     editTextTextPersonName.text.toString().replaceFirstChar { it.uppercaseChar() }
                 viewModel.getWeatherByCityName(cityName)
+
             }
             btnGeo.setOnClickListener {
                 view.hideKeyboard()
@@ -87,8 +89,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                         val latitude = location!!.latitude.toFloat()
                         val longitude = location.longitude.toFloat()
                         viewModel.getWeatherByCoords(latitude, longitude)
-
-
                     }
             }
             tVCityNameMainFragment.setOnClickListener {
