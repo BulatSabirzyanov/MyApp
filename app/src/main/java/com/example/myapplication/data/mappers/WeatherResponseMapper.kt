@@ -15,8 +15,8 @@ class WeatherResponseMapper {
                     latitude = item.coords?.latitude ?: 0.0f,
                     longitude = item.coords?.longitude ?: 0.0f,
                     speed = item.wind?.speed ?: 0.0f,
-                    main = (item.weatherList?.get(1) ?: "") as String,
-                    icon = (item.weatherList?.get(3) ?: "") as String,
+                    main = (item.weatherList?.getOrNull(1) ?: "") as String,
+                    icon = (item.weatherList?.getOrNull(3) ?: "") as String,
                     cityName = item.name ?: ""
 
                 )

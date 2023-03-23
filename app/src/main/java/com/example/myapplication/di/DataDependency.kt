@@ -10,6 +10,7 @@ import com.example.myapplication.data.model.OpenWeatherApiService
 import com.example.myapplication.data.repository.WeatherRepositoryImpl
 import com.example.myapplication.domain.repository.WeatherRepository
 import com.example.myapplication.domain.usecase.GetWeatherByCityNameUseCase
+import com.example.myapplication.domain.usecase.GetWeatherByCoordsUseCase
 
 
 class DataDependency(private val context: Context) {
@@ -29,5 +30,8 @@ class DataDependency(private val context: Context) {
     val getWeatherByCityNameUseCase: GetWeatherByCityNameUseCase = GetWeatherByCityNameUseCase(
         weatherRepository
     )
+
+    val getWeatherByCoordsUseCase: GetWeatherByCoordsUseCase =
+        GetWeatherByCoordsUseCase(weatherRepository)
 
 }

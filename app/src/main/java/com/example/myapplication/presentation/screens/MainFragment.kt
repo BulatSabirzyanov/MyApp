@@ -11,6 +11,7 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation.findNavController
+import com.bumptech.glide.Glide
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentMainBinding
 import com.example.myapplication.di.DataDependency
@@ -33,8 +34,12 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         viewModel.temperatureDataState.observe(viewLifecycleOwner) { weatherResponse ->
             if (weatherResponse != null) {
                 with(binding) {
-                    tVCityNameMainFragment.text = weatherResponse.cityName
-                    tVTempMainFragment.text = weatherResponse.main
+                    cityName = weatherResponse.cityName
+                    tVCityNameMainFragment.text = cityName
+                    tVTempMainFragment.text = "${weatherResponse.temperature}\u00B0C"
+                    Glide.with(this@MainFragment).load(
+                        "https://openweathermap.org/img/wn/${weatherResponse.icon}.png"
+                    ).into(iVWeatherIconMainFragment)
                 }
             }
         }
@@ -82,6 +87,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                         val latitude = location!!.latitude.toFloat()
                         val longitude = location.longitude.toFloat()
                         viewModel.getWeatherByCoords(latitude, longitude)
+
+
                     }
             }
             tVCityNameMainFragment.setOnClickListener {

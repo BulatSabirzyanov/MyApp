@@ -8,8 +8,8 @@ import com.bumptech.glide.Glide
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentWeatherPageBinding
 import com.example.myapplication.di.DataDependency
-import com.example.myapplication.presentation.model.MainFragmentViewModel
-import com.example.myapplication.presentation.model.MainFragmentViewModelFactory
+import com.example.myapplication.presentation.model.WeatherPageFragmentViewModel
+import com.example.myapplication.presentation.model.WeatherPageFragmentViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.util.*
 
@@ -18,9 +18,9 @@ class WeatherPageFragment : BottomSheetDialogFragment(R.layout.fragment_weather_
 
     private lateinit var binding: FragmentWeatherPageBinding
     private val dataDependency = DataDependency(requireContext())
-    private val viewModelFactory = MainFragmentViewModelFactory(dataDependency)
+    private val viewModelFactory = WeatherPageFragmentViewModelFactory(dataDependency)
     private val viewModel =
-        ViewModelProvider(this, viewModelFactory)[MainFragmentViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[WeatherPageFragmentViewModel::class.java]
 
     @SuppressLint("SetTextI18n")
     private fun observeData() {
