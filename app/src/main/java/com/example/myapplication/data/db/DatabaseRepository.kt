@@ -3,7 +3,7 @@ package com.example.myapplication.data.db
 
 class DatabaseRepository(private val database: AppDatabase) {
 
-    suspend fun getCachedWeatherResponse(cityName: String): WeatherInfo {
+    suspend fun getCachedWeatherResponse(cityName: String): WeatherInformation {
         return database.weatherDao().getCachedWeatherResponse(cityName)
     }
 
@@ -15,11 +15,11 @@ class DatabaseRepository(private val database: AppDatabase) {
         return database.weatherDao().checkIfCityExists(latitude, longitude)
     }
 
-    suspend fun getWeatherInfoByCoords(latitude: Float, longitude: Float): WeatherInfo {
+    suspend fun getWeatherInfoByCoords(latitude: Float, longitude: Float): WeatherInformation {
         return database.weatherDao().getWeatherInfoByCoords(latitude, longitude)
     }
 
-    suspend fun insertWeatherResponse(cachedWeatherResponse: WeatherInfo) {
+    suspend fun insertWeatherResponse(cachedWeatherResponse: WeatherInformation) {
         return database.weatherDao().insertWeatherResponse(cachedWeatherResponse)
     }
 

@@ -7,16 +7,13 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [WeatherInfo::class], version = 4)
+@Database(entities = [WeatherInformation::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun weatherDao(): WeatherDao
-
 
     companion object {
         @JvmStatic
         private var database: AppDatabase? = null
-
-
 
         fun getInstance(context: Context): AppDatabase {
             synchronized(this) {
@@ -37,17 +34,17 @@ abstract class AppDatabase : RoomDatabase() {
 
 val migration2to3 = object : Migration(2, 3) {
     override fun migrate(database: SupportSQLiteDatabase) {
-        database.execSQL("DROP TABLE WeatherInfo")
+        database.execSQL("DROP TABLE WeatherInformation")
     }
 }
 val migration3to4 = object : Migration(3, 4) {
     override fun migrate(database: SupportSQLiteDatabase) {
-        database.execSQL("DROP TABLE WeatherInfo")
+        database.execSQL("DROP TABLE WeatherInformation")
     }
 }
 val migration1_2 = object : Migration(1, 2) {
     override fun migrate(database: SupportSQLiteDatabase) {
-        database.execSQL("ALTER TABLE WeatherInfo ADD COLUMN newColumn TEXT")
+        database.execSQL("ALTER TABLE WeatherInformation ADD COLUMN newColumn TEXT")
     }
 }
 

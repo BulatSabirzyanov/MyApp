@@ -1,118 +1,143 @@
 package com.example.myapplication.presentation.model
 
-import android.content.Context
-import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
+
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bumptech.glide.Glide
-import com.example.myapplication.data.db.WeatherInfo
-import com.example.myapplication.data.model.response.WeatherResponse
+import com.example.myapplication.data.db.WeatherInformation
 import com.example.myapplication.di.DataDependency
-import com.example.myapplication.utils.hideKeyboard
+import com.example.myapplication.domain.entity.WeatherEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.*
+import java.util.Date
 
-class MainFragmentViewModel : ViewModel() {
+class MainFragmentViewModel(private val dataDependency: DataDependency) : ViewModel() {
 
 
-    private val _temperatureDataStateRemote: MutableLiveData<WeatherResponse?> =
+    private val _temperatureDataState: MutableLiveData<WeatherEntity> =
         MutableLiveData(null)
-    val temperatureDataStateRemote: LiveData<WeatherResponse?> = _temperatureDataStateRemote
-    private val _temperatureDataStateCache: MutableLiveData<WeatherInfo?> = MutableLiveData(null)
-    val temperatureDataStateCache: LiveData<WeatherInfo?> = _temperatureDataStateCache
+    val temperatureDataState: LiveData<WeatherEntity> = _temperatureDataState
 
 
-    fun getWeatherByCityName(cityName: String, context: Context) {
-
+    private val _errorState: MutableLiveData<String> = MutableLiveData("")
+    val errorState: LiveData<String> = _errorState
+    fun getWeatherByCityName(cityName: String) {
 
         viewModelScope.launch(Dispatchers.IO) {
-            val cityNames = databaseRepository.getAllCityNames()
+
             val dateNow = Date().time / 1000
 
-            if (cityNames.contains(cityName) && ((dateNow - databaseRepository.getDateInfoByCityName(
-                    cityName
-                )) < 60)
-            ) {
 
-                val weatherInfo = databaseRepository.getCachedWeatherResponse(cityName)
-
-                val cityNameDB = weatherInfo.cityName
-                val temp = weatherInfo.temp?.toInt().toString()
-                val src = weatherInfo.weatherIcon
-                withContext(Dispatchers.Main) {
-                    tVCityNameMainFragment.text = cityName
-                    tVTempMainFragment.text = "$temp\u00B0C"
-                    Glide.with(this@MainFragment).load(
-                        "https://openweathermap.org/img/wn/$src.png"
-                    ).into(iVWeatherIconMainFragment)
-
-                }
-
-            } else {
-                launch {
-                    runCatching {
-
-                        DataDependency.getWeatherByCityNameUseCase.invoke(city = cityName)
+            launch {
+                runCatching {
+                    dataDependency.weatherRepository.getWeatherInfoByCityName(
+                        cityName,
+                        time = (dateNow - dataDependency.weatherRepository.getDateInfoByCityName(
+                            cityName
+                        ))
+                    )
 
 
-                    }.onSuccess { weatherDataModel ->
-
-                        _temperatureDataStateRemote.postValue(weatherResponse)
-                        val temp = weatherResponse?.main?.temp?.toInt().toString()
-                        val src = weatherResponse?.weatherList?.get(0)?.icon
-
-                        withContext(Dispatchers.Main) {
-                            tVCityNameMainFragment.text = cityName
-                            tVTempMainFragment.text = "$temp\u00B0C"
-                            Glide.with(this@MainFragment).load(
-                                "https://openweathermap.org/img/wn/$src.png"
-                            ).into(iVWeatherIconMainFragment)
-                        }
+                }.onSuccess { weatherDataModel ->
+                    Log.e("ошибка во вью модал майн фрагмент", "${weatherDataModel}")
+                    _temperatureDataState.postValue(weatherDataModel)
+                    if ((dateNow - dataDependency.weatherRepository.getDateInfoByCityName(
+                            cityName
+                        )) > 60
+                    ) {
                         withContext(Dispatchers.IO) {
                             val date = Date().time / 1000
-                            val cachedWeatherResponse = WeatherInfo(
-                                id = cityName + weatherResponse?.coords?.latitude.toString() + weatherResponse?.coords?.longitude.toString(),
+                            val cachedWeatherResponse = WeatherInformation(
+                                id = cityName + weatherDataModel.latitude.toString() + weatherDataModel.longitude.toString(),
                                 date = date,
                                 cityName = cityName,
-                                latitude = weatherResponse?.coords?.latitude,
-                                longitude = weatherResponse?.coords?.longitude,
-                                temp = weatherResponse?.main?.temp,
-                                feelsLike = weatherResponse?.main?.feelsLike,
-                                tempMin = weatherResponse?.main?.tempMin,
-                                tempMax = weatherResponse?.main?.tempMax,
-                                pressure = weatherResponse?.main?.pressure,
-                                humidity = weatherResponse?.main?.humidity,
-                                windSpeed = weatherResponse?.wind?.speed,
-                                weatherId = weatherResponse?.weatherList?.getOrNull(0)?.id,
-                                weatherMain = weatherResponse?.weatherList?.getOrNull(0)?.main,
-                                weatherDescription = weatherResponse?.weatherList?.getOrNull(
-                                    0
-                                )?.description,
-                                weatherIcon = weatherResponse?.weatherList?.getOrNull(0)?.icon
+                                latitude = weatherDataModel.latitude,
+                                longitude = weatherDataModel.longitude,
+                                temp = weatherDataModel.temperature,
+                                feelsLike = weatherDataModel.feelsLike,
+                                pressure = weatherDataModel.pressure,
+                                humidity = weatherDataModel.humidity,
+                                windSpeed = weatherDataModel.speed,
+                                weatherMain = weatherDataModel.main,
+                                weatherIcon = weatherDataModel.icon
                             )
-                            databaseRepository.insertWeatherResponse(cachedWeatherResponse)
+                            dataDependency.weatherRepository.insertWeatherResponse(
+                                cachedWeatherResponse
+                            )
                         }
-
-
-                    }.onFailure {
-                        view.hideKeyboard()
-                        Toast.makeText(
-                            requireContext(),
-                            "такого города не существует",
-                            Toast.LENGTH_SHORT
-                        ).show()
                     }
 
+
+                }.onFailure { exception ->
+                    _errorState.postValue("Ошибка при получении погоды: ${exception.localizedMessage}")
                 }
 
             }
+
         }
     }
 
+    fun getWeatherByCoords(
+        latitude: Float,
+        longitude: Float,
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+
+            val dateNow = Date().time / 1000
+
+
+            launch {
+                runCatching {
+                    dataDependency.weatherRepository.getWeatherInfoByCoords(
+                        latitude = latitude,
+                        longitude = longitude,
+                        time = (dateNow - dataDependency.weatherRepository.getDateInfoByCoords(
+                            latitude = latitude, longitude = longitude
+                        ))
+                    )
+
+
+                }.onSuccess { weatherDataModel ->
+
+                    _temperatureDataState.postValue(weatherDataModel)
+                    if ((dateNow - dataDependency.weatherRepository.getDateInfoByCoords(
+                            latitude = latitude, longitude = longitude
+                        )) > 60
+                    ) {
+                        withContext(Dispatchers.IO) {
+                            val date = Date().time / 1000
+                            val cachedWeatherResponse = WeatherInformation(
+                                id = weatherDataModel.cityName + weatherDataModel.latitude.toString() + weatherDataModel.longitude.toString(),
+                                date = date,
+                                cityName = weatherDataModel.cityName,
+                                latitude = weatherDataModel.latitude,
+                                longitude = weatherDataModel.longitude,
+                                temp = weatherDataModel.temperature,
+                                feelsLike = weatherDataModel.feelsLike,
+                                pressure = weatherDataModel.pressure,
+                                humidity = weatherDataModel.humidity,
+                                windSpeed = weatherDataModel.speed,
+                                weatherMain = weatherDataModel.main,
+                                weatherIcon = weatherDataModel.icon
+                            )
+                            dataDependency.weatherRepository.insertWeatherResponse(
+                                cachedWeatherResponse
+                            )
+                        }
+                    }
+
+
+                }.onFailure { exception ->
+                    _errorState.postValue("Ошибка при получении погоды: ${exception.localizedMessage}")
+                }
+
+            }
+
+        }
+
+    }
 
 }

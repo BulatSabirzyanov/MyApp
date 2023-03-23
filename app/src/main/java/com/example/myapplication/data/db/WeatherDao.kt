@@ -8,24 +8,24 @@ import androidx.room.Query
 @Dao
 interface WeatherDao {
 
-    @Query("SELECT * FROM WeatherInfo WHERE cityName = :cityName")
-    fun getCachedWeatherResponse(cityName: String): WeatherInfo
+    @Query("SELECT * FROM WeatherInformation WHERE cityName = :cityName")
+    fun getCachedWeatherResponse(cityName: String): WeatherInformation
 
-    @Query("SELECT cityName FROM WeatherInfo")
+    @Query("SELECT cityName FROM WeatherInformation")
     fun getAllCityNames(): List<String>
 
-    @Query("SELECT COUNT(*) FROM WeatherInfo WHERE latitude = :latitude AND longitude = :longitude")
+    @Query("SELECT COUNT(*) FROM WeatherInformation WHERE latitude = :latitude AND longitude = :longitude")
     fun checkIfCityExists(latitude: Float, longitude: Float): Int
 
-    @Query("SELECT * FROM WeatherInfo WHERE latitude = :latitude AND longitude = :longitude")
-    fun getWeatherInfoByCoords(latitude: Float, longitude: Float): WeatherInfo
+    @Query("SELECT * FROM WeatherInformation WHERE latitude = :latitude AND longitude = :longitude")
+    fun getWeatherInfoByCoords(latitude: Float, longitude: Float): WeatherInformation
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertWeatherResponse(cachedWeatherResponse: WeatherInfo)
+    fun insertWeatherResponse(cachedWeatherResponse: WeatherInformation)
 
-    @Query("SELECT date FROM WeatherInfo WHERE cityName = :cityName")
+    @Query("SELECT date FROM WeatherInformation WHERE cityName = :cityName")
     fun getDateInfoByCityName(cityName: String): Long
 
-    @Query("SELECT date FROM WeatherInfo WHERE latitude = :latitude AND longitude = :longitude")
+    @Query("SELECT date FROM WeatherInformation WHERE latitude = :latitude AND longitude = :longitude")
     fun getDateInfoByCoords(latitude: Float, longitude: Float): Long
 }
