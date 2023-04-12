@@ -13,8 +13,6 @@ data class WeatherResponse(
     val wind: WeatherWind? = null,
     @SerializedName("name")
     val name: String? = null
-
-
 )
 
 

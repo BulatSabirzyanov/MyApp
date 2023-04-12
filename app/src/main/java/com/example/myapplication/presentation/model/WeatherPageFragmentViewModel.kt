@@ -7,14 +7,24 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.data.db.WeatherInformation
-import com.example.myapplication.di.DataDependency
-
+import com.example.myapplication.domain.repository.WeatherRepository
+import com.example.myapplication.domain.usecase.GetWeatherByCityNameUseCase
+import com.example.myapplication.domain.usecase.GetWeatherForecastByCityNameUseCase
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Date
 
-class WeatherPageFragmentViewModel(private val dataDependency: DataDependency) : ViewModel() {
+class WeatherPageFragmentViewModel @AssistedInject constructor(
+    private val weatherRepository: WeatherRepository,
+    private val getWeatherByCityNameUseCase: GetWeatherByCityNameUseCase,
+    private val getWeatherForecastByCityNameUseCase: GetWeatherForecastByCityNameUseCase,
+    @Assisted(ASSISTED_CITY_NAME) private val cityName: String
+
+) : ViewModel() {
 
     private val _temperatureDataState: MutableLiveData<WeatherDataModel> =
         MutableLiveData(null)
@@ -24,9 +34,9 @@ class WeatherPageFragmentViewModel(private val dataDependency: DataDependency) :
         viewModelScope.launch(Dispatchers.IO) {
 
             val dateNow = Date().time / 1000
-            val response = dataDependency.getWeatherByCityNameUseCase(
+            val response = getWeatherByCityNameUseCase(
                 cityName,
-                time = (dateNow - dataDependency.weatherRepository.getDateInfoByCityName(
+                time = (dateNow - weatherRepository.getDateInfoByCityName(
                     cityName
                 ))
             )
@@ -34,18 +44,19 @@ class WeatherPageFragmentViewModel(private val dataDependency: DataDependency) :
 
             launch {
                 runCatching {
-                    dataDependency.getWeatherByCityNameUseCase(
+                    getWeatherByCityNameUseCase(
                         cityName,
-                        time = (dateNow - dataDependency.weatherRepository.getDateInfoByCityName(
+                        time = (dateNow - weatherRepository.getDateInfoByCityName(
                             cityName
                         ))
                     )
 
 
+
                 }.onSuccess { weatherDataModel ->
                     Log.e("ошибка во вью модал майн фрагмент", "$weatherDataModel")
                     _temperatureDataState.postValue(weatherDataModel)
-                    if ((dateNow - dataDependency.weatherRepository.getDateInfoByCityName(
+                    if ((dateNow - weatherRepository.getDateInfoByCityName(
                             cityName
                         )) > 60
                     ) {
@@ -65,7 +76,7 @@ class WeatherPageFragmentViewModel(private val dataDependency: DataDependency) :
                                 weatherMain = weatherDataModel.main,
                                 weatherIcon = weatherDataModel.icon
                             )
-                            dataDependency.weatherRepository.insertWeatherResponse(
+                            weatherRepository.insertWeatherResponse(
                                 cachedWeatherResponse
                             )
                         }
@@ -76,7 +87,29 @@ class WeatherPageFragmentViewModel(private val dataDependency: DataDependency) :
                 }
 
             }
+            launch {
+                runCatching {
+                    getWeatherForecastByCityNameUseCase(cityName)
+                }.onSuccess { WeatherForecastResponse ->
+
+
+                }.onFailure {
+
+                }
+            }
 
         }
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(
+            @Assisted(ASSISTED_CITY_NAME) cityName: String
+        ): WeatherPageFragmentViewModel
+    }
+
+    companion object {
+        const val ASSISTED_CITY_NAME = "LATITUDE"
+
     }
 }

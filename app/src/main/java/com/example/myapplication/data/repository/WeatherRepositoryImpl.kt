@@ -4,18 +4,20 @@ import com.example.myapplication.data.db.DatabaseRepository
 import com.example.myapplication.data.mappers.WeatherInfoMapper
 import com.example.myapplication.data.mappers.WeatherResponseMapper
 import com.example.myapplication.data.model.OpenWeatherApiService
-
+import com.example.myapplication.data.model.response.WeatherForecastResponse
 import com.example.myapplication.domain.entity.WeatherEntity
 import com.example.myapplication.domain.repository.WeatherRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class WeatherRepositoryImpl(
+class WeatherRepositoryImpl @Inject constructor(
     private val remoteSource: OpenWeatherApiService?,
     private val localSource: DatabaseRepository,
     private val weatherResponseMapper: WeatherResponseMapper,
     private val weatherInfoMapper: WeatherInfoMapper
 ) : WeatherRepository {
+
 
     override suspend fun getWeatherInfoByCityName(city: String, time: Long): WeatherEntity {
         return if (time > 60) {
@@ -85,6 +87,15 @@ class WeatherRepositoryImpl(
     override suspend fun getDateInfoByCoords(latitude: Float, longitude: Float): Long {
         return withContext(Dispatchers.IO) {
             localSource.getDateInfoByCoords(latitude = latitude, longitude = longitude)
+        }
+    }
+
+
+    override suspend fun getForecastWeatherInfo(
+        city: String
+    ): WeatherForecastResponse {
+        return withContext(Dispatchers.IO) {
+            remoteSource!!.getForecastByCityName(city = city)
         }
     }
 

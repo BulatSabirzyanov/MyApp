@@ -7,40 +7,45 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.data.db.WeatherInformation
-import com.example.myapplication.di.DataDependency
+import com.example.myapplication.domain.repository.WeatherRepository
+import com.example.myapplication.domain.usecase.GetWeatherByCityNameUseCase
+import com.example.myapplication.domain.usecase.GetWeatherByCoordsUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Date
+import javax.inject.Inject
 
-class MainFragmentViewModel(private val dataDependency: DataDependency) : ViewModel() {
-
-
+class MainFragmentViewModel @Inject constructor(
+    private val weatherRepository: WeatherRepository,
+    private val getWeatherByCityNameUseCase: GetWeatherByCityNameUseCase,
+    private val getWeatherByCoordsUseCase: GetWeatherByCoordsUseCase
+) : ViewModel() {
     private val _temperatureDataState: MutableLiveData<WeatherDataModel> =
         MutableLiveData(null)
     val temperatureDataState: LiveData<WeatherDataModel> = _temperatureDataState
-
-
     private val _errorState: MutableLiveData<String> = MutableLiveData("")
     val errorState: LiveData<String> = _errorState
+
+
     fun getWeatherByCityName(cityName: String) {
 
         viewModelScope.launch(Dispatchers.IO) {
 
             val dateNow = Date().time / 1000
-            val response = dataDependency.getWeatherByCityNameUseCase(
+            val response = getWeatherByCityNameUseCase(
                 cityName,
-                time = (dateNow - dataDependency.weatherRepository.getDateInfoByCityName(
+                time = (dateNow - weatherRepository.getDateInfoByCityName(
                     cityName
                 ))
             )
-            Log.e("ошибка во вью модал майн фрагмент", "${response}")
+            Log.e("ошибка во вью модал майн фрагмент", "$response")
 
             launch {
                 runCatching {
-                    dataDependency.getWeatherByCityNameUseCase(
+                    getWeatherByCityNameUseCase(
                         cityName,
-                        time = (dateNow - dataDependency.weatherRepository.getDateInfoByCityName(
+                        time = (dateNow - weatherRepository.getDateInfoByCityName(
                             cityName
                         ))
                     )
@@ -49,7 +54,7 @@ class MainFragmentViewModel(private val dataDependency: DataDependency) : ViewMo
                 }.onSuccess { weatherDataModel ->
                     Log.e("ошибка во вью модал майн фрагмент", "$weatherDataModel")
                     _temperatureDataState.postValue(weatherDataModel)
-                    if ((dateNow - dataDependency.weatherRepository.getDateInfoByCityName(
+                    if ((dateNow - weatherRepository.getDateInfoByCityName(
                             cityName
                         )) > 60
                     ) {
@@ -69,7 +74,7 @@ class MainFragmentViewModel(private val dataDependency: DataDependency) : ViewMo
                                 weatherMain = weatherDataModel.main,
                                 weatherIcon = weatherDataModel.icon
                             )
-                            dataDependency.weatherRepository.insertWeatherResponse(
+                            weatherRepository.insertWeatherResponse(
                                 cachedWeatherResponse
                             )
                         }
@@ -96,10 +101,10 @@ class MainFragmentViewModel(private val dataDependency: DataDependency) : ViewMo
 
             launch {
                 runCatching {
-                    dataDependency.getWeatherByCoordsUseCase(
+                    getWeatherByCoordsUseCase(
                         latitude = latitude,
                         longitude = longitude,
-                        time = (dateNow - dataDependency.weatherRepository.getDateInfoByCoords(
+                        time = (dateNow - weatherRepository.getDateInfoByCoords(
                             latitude = latitude, longitude = longitude
                         ))
                     )
@@ -108,7 +113,7 @@ class MainFragmentViewModel(private val dataDependency: DataDependency) : ViewMo
                 }.onSuccess { weatherDataModel ->
 
                     _temperatureDataState.postValue(weatherDataModel)
-                    if ((dateNow - dataDependency.weatherRepository.getDateInfoByCoords(
+                    if ((dateNow - weatherRepository.getDateInfoByCoords(
                             latitude = latitude, longitude = longitude
                         )) > 60
                     ) {
@@ -128,7 +133,7 @@ class MainFragmentViewModel(private val dataDependency: DataDependency) : ViewMo
                                 weatherMain = weatherDataModel.main,
                                 weatherIcon = weatherDataModel.icon
                             )
-                            dataDependency.weatherRepository.insertWeatherResponse(
+                            weatherRepository.insertWeatherResponse(
                                 cachedWeatherResponse
                             )
                         }

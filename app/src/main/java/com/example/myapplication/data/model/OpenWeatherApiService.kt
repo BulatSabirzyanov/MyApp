@@ -1,5 +1,6 @@
 package com.example.myapplication.data.model
 
+import com.example.myapplication.data.model.response.WeatherForecastResponse
 import com.example.myapplication.data.model.response.WeatherResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -21,4 +22,9 @@ interface OpenWeatherApiService {
     suspend fun getWeatherByCityNameQueryMap(
         @QueryMap param: Map<String, String>
     ): WeatherResponse
+
+    @GET("forecast")
+    suspend fun getForecastByCityName(
+        @Query("q") city: String
+    ): WeatherForecastResponse
 }

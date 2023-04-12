@@ -2,6 +2,7 @@ package com.example.myapplication.presentation.screens
 
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
@@ -13,22 +14,34 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation.findNavController
 import com.bumptech.glide.Glide
 import com.example.myapplication.R
+import com.example.myapplication.WeatherAppApplication
 import com.example.myapplication.databinding.FragmentMainBinding
-import com.example.myapplication.di.DataDependency
 import com.example.myapplication.presentation.model.MainFragmentViewModel
 import com.example.myapplication.presentation.model.MainFragmentViewModelFactory
 import com.example.myapplication.utils.hideKeyboard
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import javax.inject.Inject
 
 class MainFragment : Fragment(R.layout.fragment_main) {
-
+    @Inject
+    lateinit var viewModelFactory: MainFragmentViewModelFactory
     private lateinit var binding: FragmentMainBinding
     private lateinit var cityName: String
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var dataDependency: DataDependency
-    private lateinit var viewModelFactory: MainFragmentViewModelFactory
     private val viewModel by viewModels<MainFragmentViewModel> { viewModelFactory }
+    private var bundle = Bundle()
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (requireActivity().application as WeatherAppApplication).appComponent.inject(this)
+    }
 
     private fun observeData() {
         viewModel.temperatureDataState.observe(viewLifecycleOwner) { weatherResponse ->
@@ -47,16 +60,14 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
         viewModel.errorState.observe(viewLifecycleOwner) { error ->
             run { Log.e("ошибка ", error) }
-
         }
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentMainBinding.bind(view)
-        dataDependency = DataDependency(requireContext())
-        viewModelFactory = MainFragmentViewModelFactory(dataDependency)
+
+
         view.setOnClickListener {
             view.hideKeyboard()
         }
@@ -89,15 +100,19 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                         val latitude = location!!.latitude.toFloat()
                         val longitude = location.longitude.toFloat()
                         viewModel.getWeatherByCoords(latitude, longitude)
+
                     }
+
             }
             tVCityNameMainFragment.setOnClickListener {
-                val bundle = Bundle().apply {
+                bundle.apply {
                     putString("cityName", cityName)
+
                 }
                 findNavController(view).navigate(
                     R.id.action_mainFragment_to_weatherPageFragment, bundle
                 )
+
             }
 
         }

@@ -3,8 +3,9 @@ package com.example.myapplication.data.mappers
 
 import com.example.myapplication.data.db.WeatherInformation
 import com.example.myapplication.domain.entity.WeatherEntity
+import javax.inject.Inject
 
-class WeatherInfoMapper {
+class WeatherInfoMapper @Inject constructor() {
 
     fun map(item: WeatherInformation?): WeatherEntity {
         return (item?.let {

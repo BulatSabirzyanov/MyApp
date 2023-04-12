@@ -8,6 +8,7 @@ plugins {
 android {
     compileSdk 33
 
+
     defaultConfig {
         applicationId "com.example.myapplication"
         minSdk 23
@@ -70,6 +71,13 @@ dependencies {
     def retrofit_version = '2.9.0'
     implementation "com.squareup.retrofit2:retrofit:${retrofit_version}"
     implementation "com.squareup.retrofit2:converter-gson:${retrofit_version}"
+
+    def dagger_version = "2.45"
+    implementation "com.google.dagger:dagger:$dagger_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+    implementation "com.squareup.inject:assisted-inject-annotations-dagger2:0.6.0"
+    kapt "com.squareup.inject:assisted-inject-processor-dagger2:0.6.0"
+
 
     def coroutines_version = '1.6.4'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
