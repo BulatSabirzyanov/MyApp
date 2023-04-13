@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.myapplication.R
 import com.example.myapplication.WeatherAppApplication
@@ -12,6 +13,8 @@ import com.example.myapplication.di.appComponent
 import com.example.myapplication.di.lazyViewModel
 import com.example.myapplication.presentation.model.WeatherPageFragmentViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -19,11 +22,13 @@ import javax.inject.Inject
 class WeatherPageFragment : BottomSheetDialogFragment(R.layout.fragment_weather_page) {
     @Inject
     lateinit var viewModelFactory: WeatherPageFragmentViewModel.Factory
+    private val cityName =
+        requireArguments().getString("cityName")?.replaceFirstChar { it.uppercaseChar() }
+            .toString()
     private val viewModel: WeatherPageFragmentViewModel by lazyViewModel {
         requireContext().appComponent().weatherPageFragmentViewModel().create(cityName = cityName)
     }
     private lateinit var binding: FragmentWeatherPageBinding
-    private lateinit var cityName: String
 
 
     override fun onAttach(context: Context) {
@@ -34,20 +39,25 @@ class WeatherPageFragment : BottomSheetDialogFragment(R.layout.fragment_weather_
 
     @SuppressLint("SetTextI18n")
     private fun observeData() {
-        viewModel.temperatureDataState.observe(viewLifecycleOwner) { weatherResponse ->
+        viewModel.fullInfoState.observe(viewLifecycleOwner) { weatherFullInfo ->
             with(binding) {
-                if (weatherResponse != null) {
-                    tVCityName.text = weatherResponse.cityName
-                    Glide.with(this@WeatherPageFragment).load(
-                        "https://openweathermap.org/img/wn/${weatherResponse.icon}.png"
-                    ).into(iVWeatherIcon)
+                if (weatherFullInfo != null) {
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        tVCityName.text = weatherFullInfo.weatherEntity.cityName
+                        Glide.with(this@WeatherPageFragment).load(
+                            "https://openweathermap.org/img/wn/${weatherFullInfo.weatherEntity.icon}.png"
+                        ).into(iVWeatherIcon)
 
-                    tVTemp.text = "${weatherResponse.temperature}\u00B0C"
-                    tVFeelsLike.text = "Ощущается как ${weatherResponse.feelsLike}\u00B0C"
-                    tVWeather.text = weatherResponse.main
-                    tVWindSpeed.text = "${weatherResponse.speed} м/c"
-                    tVHumidity.text = "${weatherResponse.humidity}%"
-                    tVPressure.text = "${weatherResponse.pressure} мм рт. ст."
+                        tVTemp.text = "${weatherFullInfo.weatherEntity.temperature.toInt()}\u00B0C"
+                        tVFeelsLike.text =
+                            "Ощущается ${weatherFullInfo.weatherEntity.feelsLike.toInt()}\u00B0C"
+                        tVWeather.text = weatherFullInfo.weatherEntity.main
+                        tVWindSpeed.text = "${weatherFullInfo.weatherEntity.speed} м/c"
+                        tVHumidity.text = "${weatherFullInfo.weatherEntity.humidity}%"
+                        tVPressure.text = "${weatherFullInfo.weatherEntity.pressure} мм рт. ст."
+                    }
+
+
                 }
             }
         }
@@ -58,11 +68,7 @@ class WeatherPageFragment : BottomSheetDialogFragment(R.layout.fragment_weather_
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentWeatherPageBinding.bind(view)
         observeData()
-        cityName =
-            requireArguments().getString("cityName")?.replaceFirstChar { it.uppercaseChar() }
-                .toString()
         viewModel.getWeatherByCityName(cityName = cityName)
-
 
     }
 

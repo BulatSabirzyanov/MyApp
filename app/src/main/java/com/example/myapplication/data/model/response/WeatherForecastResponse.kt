@@ -15,8 +15,9 @@ data class WeatherForecastInfo(
     @SerializedName("weather")
     val weatherList: List<WeatherInfo>? = null,
     @SerializedName("wind")
-    val wind: WeatherWind? = null
-
+    val wind: WeatherWind? = null,
+    @SerializedName("dt_txt")
+    val dtTxt: String? = null
 
 )
 

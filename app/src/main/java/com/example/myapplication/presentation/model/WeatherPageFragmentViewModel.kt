@@ -1,7 +1,6 @@
 package com.example.myapplication.presentation.model
 
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -26,36 +25,29 @@ class WeatherPageFragmentViewModel @AssistedInject constructor(
 
 ) : ViewModel() {
 
-    private val _temperatureDataState: MutableLiveData<WeatherDataModel> =
+
+    private val _fullInfoState: MutableLiveData<WeatherFullInfo> =
         MutableLiveData(null)
-    val temperatureDataState: LiveData<WeatherDataModel> = _temperatureDataState
+    val fullInfoState: LiveData<WeatherFullInfo> = _fullInfoState
     fun getWeatherByCityName(cityName: String) {
 
         viewModelScope.launch(Dispatchers.IO) {
 
             val dateNow = Date().time / 1000
-            val response = getWeatherByCityNameUseCase(
-                cityName,
-                time = (dateNow - weatherRepository.getDateInfoByCityName(
-                    cityName
-                ))
-            )
-            Log.e("ошибка во вью модал майн фрагмент", "${response}")
+
 
             launch {
                 runCatching {
-                    getWeatherByCityNameUseCase(
-                        cityName,
-                        time = (dateNow - weatherRepository.getDateInfoByCityName(
+                    weatherRepository.getWeatherInfo(
+                        cityName, (dateNow - weatherRepository.getDateInfoByCityName(
                             cityName
                         ))
                     )
 
 
+                }.onSuccess { weatherFullInfo ->
 
-                }.onSuccess { weatherDataModel ->
-                    Log.e("ошибка во вью модал майн фрагмент", "$weatherDataModel")
-                    _temperatureDataState.postValue(weatherDataModel)
+                    _fullInfoState.postValue(weatherFullInfo)
                     if ((dateNow - weatherRepository.getDateInfoByCityName(
                             cityName
                         )) > 60
@@ -63,18 +55,18 @@ class WeatherPageFragmentViewModel @AssistedInject constructor(
                         withContext(Dispatchers.IO) {
                             val date = Date().time / 1000
                             val cachedWeatherResponse = WeatherInformation(
-                                id = cityName + weatherDataModel.latitude.toString() + weatherDataModel.longitude.toString(),
+                                id = cityName + weatherFullInfo.weatherEntity.latitude.toString() + weatherFullInfo.weatherEntity.longitude.toString(),
                                 date = date,
                                 cityName = cityName,
-                                latitude = weatherDataModel.latitude,
-                                longitude = weatherDataModel.longitude,
-                                temp = weatherDataModel.temperature,
-                                feelsLike = weatherDataModel.feelsLike,
-                                pressure = weatherDataModel.pressure,
-                                humidity = weatherDataModel.humidity,
-                                windSpeed = weatherDataModel.speed,
-                                weatherMain = weatherDataModel.main,
-                                weatherIcon = weatherDataModel.icon
+                                latitude = weatherFullInfo.weatherEntity.latitude,
+                                longitude = weatherFullInfo.weatherEntity.longitude,
+                                temp = weatherFullInfo.weatherEntity.temperature,
+                                feelsLike = weatherFullInfo.weatherEntity.feelsLike,
+                                pressure = weatherFullInfo.weatherEntity.pressure,
+                                humidity = weatherFullInfo.weatherEntity.humidity,
+                                windSpeed = weatherFullInfo.weatherEntity.speed,
+                                weatherMain = weatherFullInfo.weatherEntity.main,
+                                weatherIcon = weatherFullInfo.weatherEntity.icon
                             )
                             weatherRepository.insertWeatherResponse(
                                 cachedWeatherResponse
@@ -83,20 +75,10 @@ class WeatherPageFragmentViewModel @AssistedInject constructor(
                     }
 
 
-                }.onFailure {
                 }
 
             }
-            launch {
-                runCatching {
-                    getWeatherForecastByCityNameUseCase(cityName)
-                }.onSuccess { WeatherForecastResponse ->
 
-
-                }.onFailure {
-
-                }
-            }
 
         }
     }

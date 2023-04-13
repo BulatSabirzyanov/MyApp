@@ -30,7 +30,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private lateinit var cityName: String
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val viewModel by viewModels<MainFragmentViewModel> { viewModelFactory }
-    private var bundle = Bundle()
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -105,6 +105,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
             }
             tVCityNameMainFragment.setOnClickListener {
+                var bundle = Bundle()
                 bundle.apply {
                     putString("cityName", cityName)
 

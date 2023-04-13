@@ -7,6 +7,7 @@ import com.example.myapplication.data.model.OpenWeatherApiService
 import com.example.myapplication.data.model.response.WeatherForecastResponse
 import com.example.myapplication.domain.entity.WeatherEntity
 import com.example.myapplication.domain.repository.WeatherRepository
+import com.example.myapplication.presentation.model.WeatherFullInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -97,6 +98,16 @@ class WeatherRepositoryImpl @Inject constructor(
         return withContext(Dispatchers.IO) {
             remoteSource!!.getForecastByCityName(city = city)
         }
+    }
+
+    override suspend fun getWeatherInfo(city: String, time: Long): WeatherFullInfo {
+        return withContext(Dispatchers.IO) {
+            WeatherFullInfo(
+                getWeatherInfoByCityName(city, time),
+                remoteSource!!.getForecastByCityName(city)
+            )
+        }
+
     }
 
 
