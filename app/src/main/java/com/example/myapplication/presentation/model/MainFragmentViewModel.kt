@@ -52,7 +52,7 @@ class MainFragmentViewModel @Inject constructor(
 
 
                 }.onSuccess { weatherDataModel ->
-                    Log.e("ошибка во вью модал майн фрагмент", "$weatherDataModel")
+
                     _temperatureDataState.postValue(weatherDataModel)
                     if ((dateNow - weatherRepository.getDateInfoByCityName(
                             cityName
@@ -72,8 +72,10 @@ class MainFragmentViewModel @Inject constructor(
                                 humidity = weatherDataModel.humidity,
                                 windSpeed = weatherDataModel.speed,
                                 weatherMain = weatherDataModel.main,
-                                weatherIcon = weatherDataModel.icon
-                            )
+                                weatherIcon = weatherDataModel.icon,
+
+
+                                )
                             weatherRepository.insertWeatherResponse(
                                 cachedWeatherResponse
                             )
@@ -131,6 +133,7 @@ class MainFragmentViewModel @Inject constructor(
                                 humidity = weatherDataModel.humidity,
                                 windSpeed = weatherDataModel.speed,
                                 weatherMain = weatherDataModel.main,
+
                                 weatherIcon = weatherDataModel.icon
                             )
                             weatherRepository.insertWeatherResponse(

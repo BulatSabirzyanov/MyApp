@@ -15,12 +15,10 @@ class WeatherResponseMapper @Inject constructor() {
                 latitude = item.coords?.latitude ?: 0.0f,
                 longitude = item.coords?.longitude ?: 0.0f,
                 speed = item.wind?.speed ?: 0.0f,
-                main = (item.weatherList?.getOrNull(1) ?: "") as String,
-                icon = (item.weatherList?.getOrNull(3) ?: "") as String,
+                main = item.weatherList?.firstOrNull()?.main ?: "",
+                icon = item.weatherList?.firstOrNull()?.icon ?: "",
                 cityName = item.name ?: ""
-
             )
-
         } ?: WeatherEntity(
             temperature = 0.0f,
             pressure = 0.0f,

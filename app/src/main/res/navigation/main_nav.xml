@@ -16,7 +16,7 @@
     </fragment>
     <dialog
         android:id="@+id/weatherPageFragment"
-        android:name="com.example.myapplication.presentation.screens.WeatherPageFragment"
+        android:name="com.example.myapplication.presentation.wpfragment.WeatherPageFragment"
         android:label="fragment_weather_page"
         tools:layout="@layout/fragment_weather_page" />
 </navigation>

@@ -3,7 +3,7 @@ package com.example.myapplication.di
 import android.app.Application
 import com.example.myapplication.presentation.model.WeatherPageFragmentViewModel
 import com.example.myapplication.presentation.screens.MainFragment
-import com.example.myapplication.presentation.screens.WeatherPageFragment
+import com.example.myapplication.presentation.wpfragment.WeatherPageFragment
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton

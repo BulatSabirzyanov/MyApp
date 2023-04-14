@@ -51,5 +51,5 @@ data class WeatherMain(
 
 data class WeatherWind(
     @SerializedName("speed")
-    val speed: Float?
+    val speed: Float
 )

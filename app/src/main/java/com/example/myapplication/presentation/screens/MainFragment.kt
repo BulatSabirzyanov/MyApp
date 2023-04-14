@@ -46,11 +46,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private fun observeData() {
         viewModel.temperatureDataState.observe(viewLifecycleOwner) { weatherResponse ->
             if (weatherResponse != null) {
-                println("ссылка${weatherResponse.icon}")
                 with(binding) {
                     cityName = weatherResponse.cityName
                     tVCityNameMainFragment.text = cityName
-                    tVTempMainFragment.text = "${weatherResponse.temperature}\u00B0C"
+                    tVTempMainFragment.text = "${weatherResponse.temperature.toInt()}\u00B0C"
 
                     Glide.with(this@MainFragment).load(
                         "https://openweathermap.org/img/wn/${weatherResponse.icon}.png"
@@ -115,6 +114,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 )
 
             }
+
 
         }
     }

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingLeft="10sp"
+    android:paddingTop="10sp">
+
+
+    <ImageView
+        android:id="@+id/iVIconWeatherItem"
+        android:layout_width="89dp"
+        android:layout_height="68dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/tVTempWeatherItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="3*C"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/iVIconWeatherItem"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tVFeelsLikeWeatherItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ощущается "
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@+id/iVIconWeatherItem"
+        app:layout_constraintTop_toBottomOf="@+id/tVTempWeatherItem" />
+
+    <TextView
+        android:id="@+id/tVMainWeatherItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/tVTempWeatherItem"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Облачно" />
+
+    <TextView
+        android:id="@+id/tVWindSpeedWeatherItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@+id/iVIconWeatherItem"
+        app:layout_constraintTop_toBottomOf="@+id/tVFeelsLikeWeatherItem"
+        tools:text="Скорость ветра 1 км/ч" />
+
+    <TextView
+        android:id="@+id/tVDateWeatherItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iVIconWeatherItem"
+        tools:text="12:00" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
