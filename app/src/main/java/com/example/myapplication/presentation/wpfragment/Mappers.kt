@@ -9,20 +9,24 @@ fun List<WeatherModel>.concatenateWithDate(dates: List<DateModel>): List<Delegat
     val delegateItemList: MutableList<DelegateItem> = mutableListOf()
 
     dates.forEach { dateModel ->
-        delegateItemList.add(
-            DateDelegateItem(id = dateModel.id, value = dateModel)
-        )
-        val date = dateModel.date
-        val allDayWeathers = this.filter { weather ->
-            weather.date == date
-        }
-        allDayWeathers.forEach { model ->
+        if (!delegateItemList.contains(DateDelegateItem(id = dateModel.id, value = dateModel))) {
+
             delegateItemList.add(
-                WeatherDelegateItem(
-                    id = model.id,
-                    value = model,
-                )
+                DateDelegateItem(id = dateModel.id, value = dateModel)
             )
+
+            val date = dateModel.date
+            val allDayWeathers = this.filter { weather ->
+                weather.date.split(" ")[0] == date
+            }
+            allDayWeathers.forEach { model ->
+                delegateItemList.add(
+                    WeatherDelegateItem(
+                        id = model.id,
+                        value = model,
+                    )
+                )
+            }
         }
     }
     return delegateItemList

@@ -26,6 +26,7 @@ class WeatherDelegate(private val glide: RequestManager) : AdapterDelegate {
     ) {
         (holder as ViewHolder).bind(item.content() as WeatherModel)
     }
+//    c днем рождения!
 
     override fun isOfViewType(item: DelegateItem): Boolean = item is WeatherDelegateItem
 
@@ -41,6 +42,7 @@ class WeatherDelegate(private val glide: RequestManager) : AdapterDelegate {
                 tVTempWeatherItem.text = "${model.temperature.toInt()}°C"
                 tVFeelsLikeWeatherItem.text = "Ощущается ${model.feelsLike.toInt()}°C"
                 tVWindSpeedWeatherItem.text = "Скорость ветра ${model.windSpeed}"
+                tVDateWeatherItem.text = model.date.split(" ")[1]
             }
         }
     }

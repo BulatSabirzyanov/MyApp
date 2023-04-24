@@ -33,6 +33,9 @@ class DateDelegate : AdapterDelegate {
 
         fun bind(model: DateModel) {
             with(binding) {
+                var data = model.date.split(" ")[0].split("-").slice(1..2)
+
+                //date.text = "${data[0]}.${data[1]}"
                 date.text = model.date
             }
         }

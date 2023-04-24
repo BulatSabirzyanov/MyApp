@@ -62,14 +62,18 @@ class WeatherPageFragmentViewModel @AssistedInject constructor(
 
                 }.onSuccess { weatherFullInfo ->
                     weatherFullInfo.weatherForecastResponse.weatherList?.let { weatherList ->
-                        val listDateItems = weatherList.mapNotNull { forecastInfo ->
-                            forecastInfo.weatherList?.firstOrNull()?.id?.let { id ->
-                                DateModel(
-                                    Random.nextLong(10000, 1000000),
-                                    forecastInfo.dtTxt.orEmpty()
-                                )
+                        val listDateItems = weatherList
+                            .distinctBy { it.dtTxt.orEmpty().split(" ")[0] }
+                            .mapNotNull { forecastInfo ->
+
+                                forecastInfo.weatherList?.firstOrNull()?.id?.let { id ->
+
+                                    DateModel(
+                                        Random.nextLong(10000, 1000000),
+                                        forecastInfo.dtTxt.orEmpty().split(" ")[0]
+                                    )
+                                }
                             }
-                        }
                         _listOfDates.postValue(listDateItems)
                         Log.e("listofDate", listDateItems.toString())
                         val weatherModelsList = weatherList.mapNotNull { forecastInfo ->

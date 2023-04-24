@@ -64,16 +64,16 @@ class DataModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
-        return OkHttpClient.Builder()
-            .addInterceptor { chain ->
-                val requestUrl = chain.request().url
-                val newUrl = requestUrl.newBuilder()
-                    .addQueryParameter("appid", BuildConfig.WEATHER_KEY)
-                    .addQueryParameter("units", "metric")
-                    .build()
-                chain.proceed(chain.request().newBuilder().url(newUrl).build())
-            }
-            .addInterceptor(httpLoggingInterceptor)
-            .build()
+            return OkHttpClient.Builder()
+                .addInterceptor { chain ->
+                    val requestUrl = chain.request().url
+                    val newUrl = requestUrl.newBuilder()
+                        .addQueryParameter("appid", BuildConfig.WEATHER_KEY)
+                        .addQueryParameter("units", "metric")
+                        .build()
+                    chain.proceed(chain.request().newBuilder().url(newUrl).build())
+                }
+                .addInterceptor(httpLoggingInterceptor)
+                .build()
     }
 }
